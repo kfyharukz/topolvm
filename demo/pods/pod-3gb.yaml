@@ -1,0 +1,30 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: topolvm-pvc-3gb
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: topolvm-provisioner
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod-3gb
+  labels:
+    app.kubernetes.io/name: my-pod-3gb
+spec:
+  containers:
+  - name: ubuntu
+    image: quay.io/cybozu/ubuntu:18.04
+    command: ["/usr/local/bin/pause"]
+    volumeMounts:
+    - mountPath: /test1
+      name: my-volume
+  volumes:
+    - name: my-volume
+      persistentVolumeClaim:
+        claimName: topolvm-pvc-3gb
